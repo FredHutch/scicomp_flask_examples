@@ -98,6 +98,17 @@ We recommend that you port the R code to Python.
 
 (??)
 
+
+### Secrets Management
+
+FIXME add to this
+
+### Does your app use PHI?
+
+FIXME add to this
+
+
+
 ### Use GitHub for version control
 
 Store your code in a GitHub repository (ADD MORE HERE)
