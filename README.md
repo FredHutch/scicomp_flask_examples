@@ -87,6 +87,15 @@ module.
 * [pandas](http://pandas.pydata.org/)
 * ??
 
+
+### Web Servers
+
+TODO fill this in
+
+* Flask development server - pros & cons
+* gunicorn
+* apache and nginx via WSGI
+
 ### Interacting with the gizmo cluster
 
 ?? Do we need this section ?? Are flask apps allowed to submit jobs
