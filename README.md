@@ -63,11 +63,20 @@ t = ('RHAT',)
 c.execute('SELECT * FROM stocks WHERE symbol=?', t)
 ```
 
-?? Do we recommend/only support a specific RDBMS?
-I would say that we should allow sqlite3 for testing and
-development since it's easy and many systems already have it installed,
-and you can do in-memory databases. But require PostgreSQL or MySQL
-for production. ??
+#### Which RDBMS shold I use?
+
+PostgreSQL is the main supported RDBMS. You may use sqlite3 just
+for testing and development(??), but in production you should use
+PostgreSQL.
+
+For PostgreSQL, use [myDB](https://mydb.fredhutch.org). If your app lives
+outside the Hutch network, use
+[Amazon RDS for PostgreSQL](https://aws.amazon.com/rds/postgresql/).
+
+If you need to use a NoSQL database, use
+[MongoDB](https://www.mongodb.com/) and the
+[PyMongo](https://api.mongodb.com/python/current/) module.
+
 
 
 
@@ -95,6 +104,16 @@ TODO fill this in
 * Flask development server - pros & cons
 * gunicorn
 * apache and nginx via WSGI
+
+
+### SSL (https)
+
+It's recommended that your web app only be accessible via
+SSL (the HTTPS protocol). If your web app will use a `fredhutch.org`
+or `fhcrc.org` domain, contact `SciComp` for help setting this up.
+If you'll be using an external domain name, consider using
+[Let's Encrypt](https://letsencrypt.org/) to set up your
+SSL certificates.
 
 ### Interacting with the gizmo cluster
 
