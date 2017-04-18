@@ -1,0 +1,2 @@
+export TEST_DB_URL="put the test database url here"
+export LIVE_DB_URL="put the live database url here"

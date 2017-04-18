@@ -52,7 +52,7 @@ For example, **never do this**:
 
 ```python
 # Never do this -- insecure!
-symbol = 'RHAT'
+symbol = 'RHAT' # assume this comes from a form or other untrusted source
 c.execute("SELECT * FROM stocks WHERE symbol = '%s'" % symbol)
 ```
 
@@ -63,7 +63,7 @@ t = ('RHAT',)
 c.execute('SELECT * FROM stocks WHERE symbol=?', t)
 ```
 
-#### Which RDBMS shold I use?
+#### Which RDBMS should I use?
 
 PostgreSQL is the main supported RDBMS. You may use sqlite3 just
 for testing and development(??), but in production you should use
