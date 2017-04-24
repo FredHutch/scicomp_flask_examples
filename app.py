@@ -12,6 +12,9 @@ from flask import Flask
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 
+# local imports
+import util
+
 app = Flask(__name__) # pylint: disable=invalid-name
 api = Api(app) # pylint: disable=invalid-name
 
@@ -26,36 +29,39 @@ if not os.getenv(url_key):
     sys.exit(1)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(url_key)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # suppress warning
+
 db = SQLAlchemy(app) # pylint: disable=invalid-name
 
+# util.set_db(db.Model)
+
 # Models
-class Fruit(db.Model): # pylint: disable=too-few-public-methods
-    """
-    Model for Fruit.
-    Each Fruit can have many Atrributes.
-    """
-    id = db.Column(db.Integer, primary_key=True) # pylint: disable=invalid-name
-    name = db.Column(db.String())
-    attributes = db.relationship('Attribute', backref='fruit')
-
-    def __repr__(self):
-        return "<Fruit: id={}, name={}>".format(self.id, self.name)
-
-class Attribute(db.Model): # pylint: disable=too-few-public-methods
-    """
-    Model for Attribute.
-    Each Fruit can have many Attributes.
-    """
-    id = db.Column(db.Integer, primary_key=True) # pylint: disable=invalid-name
-    name = db.Column(db.String())
-    fruit_id = db.Column(db.Integer, db.ForeignKey('fruit.id'))
-
-    def __repr__(self):
-        return "<Attribute: id={}, name={}>".format(self.id, self.name)
-
-if not all([x in db.engine.table_names() for x in ['fruit', 'attribute']]):
-    # create tables
-    db.create_all()
+# class Fruit(db.Model): # pylint: disable=too-few-public-methods
+#     """
+#     Model for Fruit.
+#     Each Fruit can have many Atrributes.
+#     """
+#     id = db.Column(db.Integer, primary_key=True) # pylint: disable=invalid-name
+#     name = db.Column(db.String())
+#     attributes = db.relationship('Attribute', backref='fruit')
+#
+#     def __repr__(self):
+#         return "<Fruit: id={}, name={}>".format(self.id, self.name)
+#
+# class Attribute(db.Model): # pylint: disable=too-few-public-methods
+#     """
+#     Model for Attribute.
+#     Each Fruit can have many Attributes.
+#     """
+#     id = db.Column(db.Integer, primary_key=True) # pylint: disable=invalid-name
+#     name = db.Column(db.String())
+#     fruit_id = db.Column(db.Integer, db.ForeignKey('fruit.id'))
+#
+#     def __repr__(self):
+#         return "<Attribute: id={}, name={}>".format(self.id, self.name)
+#
+# if not all([x in db.engine.table_names() for x in ['fruit', 'attribute']]):
+#     # create tables
+#     db.create_all()
 
 class HelloWorld(Resource):
     """
@@ -71,7 +77,7 @@ class HelloWorld(Resource):
 
 api.add_resource(HelloWorld, '/')
 
-import IPython;IPython.embed()
+# import IPython;IPython.embed()
 
 
 if __name__ == '__main__':
