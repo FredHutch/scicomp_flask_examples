@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Storage Hotspot Finder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Storage Hotspots</a>
+        </div>
+    </div>
+    <div id="main" class="container">
+
+
+        <table>
+            <thead><tr>
+                <th>Owner</th><th>Name</th><th>Filename</th><th>mtime</th><th>GB</th>
+            </tr></thead>
+            <tbody data-bind="foreach: rows">
+                <tr>
+                    <td data-bind="text: owner"></td>
+                    <td data-bind="text: name"></td>
+                    <td data-bind="text: filename"></td>
+                    <td data-bind="text: mtime"></td>
+                    <td data-bind="text: gb"></td>
+                </tr>
+            </tbody>        </table>
+
+
+    </div>
+    <script type="text/javascript">
+
+        // application code here!
+
+        // Class to represent a row in the seat reservations grid
+        function Row(stuff) {
+            var self = this;
+            self.owner = stuff[0];
+            self.name = stuff[1];
+            self.filename = stuff[2];
+            self.mtime = stuff[3];
+            self.gb = stuff[4];
+        }
+
+        // Overall viewmodel for this screen, along with initial state
+        function MyViewModel() {
+            var self = this;
+
+            // Non-editable catalog data - would come from the server
+            // self.availableMeals = [
+            //     { mealName: "Standard (sandwich)", price: 0 },
+            //     { mealName: "Premium (lobster)", price: 34.95 },
+            //     { mealName: "Ultimate (whole zebra)", price: 290 }
+            // ];
+
+            // Editable data
+            // self.rows = ko.observableArray([
+            //     new Row("nelson_p", "ndesarka", "/fh/fast/foo", "1/2/3", 6467.11),
+            //     new Row("christ_j", "satan", "/fh/fast/bar", "1/2/4", 666.666),
+            //     new Row("bla_b", "hell", "/fh/fast/baz", "1/2/5", 123.456)
+            // ]);
+            self.rows = ko.observableArray([]);
+
+            $.ajax({url: "/query",
+                    data: {pi: 'peters_u', foldersize: 10,
+                          rows_per_page: 15, offset: 0},
+                    success: function(response) {
+                      var mappedRows = $.map(response,
+                        function(item) {
+                          return new Row(item);
+                        });
+                        self.rows(mappedRows)
+                    },
+                    error: function(xhr) {alert(xhr)}});
+        }
+
+        ko.applyBindings(new MyViewModel());
+
+
+    </script>
+</body>
+</html>

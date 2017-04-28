@@ -1,15 +1,21 @@
+"""
+Create app here, using application factory pattern.
+"""
 import os
+import os.path
 import sys
 
-from database import db
 from flask import Flask
-import os.path
-from views import FileMetadata
-from views import UidMapping
+
+from database import db
 from views import main_blueprint
 
 
 def create_app():
+    """
+    Helper method to create app. Means that app can be used both
+    by the web app and the command line (see autoapp.py).
+    """
     app = Flask(__name__)
     app.config['DEBUG'] = True
     url = os.getenv("STORCRAWL_DB_URL")
@@ -17,26 +23,17 @@ def create_app():
         print("Can't run! Define STORCRAWL_DB_URL in the environment.")
         sys.exit(1)
     app.config['SQLALCHEMY_DATABASE_URI'] = url
+    # Comment this out if you don't want to see SQL queries emitted:
+    app.config['SQLALCHEMY_ECHO'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # suppress warning
     db.init_app(app)
     app.register_blueprint(main_blueprint, url_prefix='')
     return app
 
-
-def setup_database(app):
-    pass
-    # with app.app_context():
-    #     db.create_all()
-    # user = User()
-    # user.username = "Tom"
-    # db.session.add(user)
-    # db.session.commit()
-
-
 if __name__ == '__main__':
-    app = create_app()
-    # import IPython;IPython.embed()
-    #Because this is just a demostration we set up the database like this.
-    # if not os.path.isfile('/tmp/test.db'):
-    #   setup_database(app)
-    app.run()
+    """
+    Run me like this:
+    FLASK_DEBUG=True python app.py
+    """
+    APP = create_app()
+    APP.run()
