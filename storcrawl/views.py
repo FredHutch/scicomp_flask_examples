@@ -3,9 +3,7 @@ See
 https://docs.google.com/document/d/1IvzWOgbeQDLxkTlWX0bg2lcQBmxvba8mAaZgy0Ymxck/edit#
 """
 
-import os
-
-# import requests
+import datetime
 
 from flask.blueprints import Blueprint
 from flask import request, abort, jsonify, render_template
@@ -36,10 +34,24 @@ def test():
 
 @main_blueprint.route('/')
 def index():
-    """Return static index page"""
-    # req = requests.get('https://toolbox.fhcrc.org/json/pi_all.json')
-
-    return render_template('index.html')
+    """Render index template"""
+    # This SQL is necessary because postgres does not optimize DISTINCT
+    # queries very well, so they are slow. This is faster. More info here:
+    # https://github.com/FredHutch/storage-crawler/issues/8#issuecomment-298399973
+    res = db.engine.execute("""
+         with recursive fm(n) as
+         (
+             select min(owner) from file_metadata union all
+                 select(select file_metadata.owner from file_metadata where
+                 file_metadata.owner > n order by file_metadata.owner limit 1)
+                 from fm where n is not null) select n from fm;""")
+    pi_list = []
+    for item in res:
+        if item[0]is not None:
+            pi_list.append(item[0])
+    pi_list = sorted(pi_list)
+    pi_list.insert(0, 'None')
+    return render_template('index.html', pi_list=pi_list)
 
 @main_blueprint.route('/query')
 def query():
@@ -60,6 +72,11 @@ def query():
     except ValueError:
         abort(400, 'foldersize, rows_per_page, and offset must be numbers')
 
+    filters = [FileMetadata.count > -1, FileMetadata.sum  > (foldersize * GB)]
+    print("\n\n\nWhat is PI? {}\n\n\n".format(pi))
+    if pi != "None":
+        filters.append(FileMetadata.owner == pi)
+
     res = db.session.query(FileMetadata.owner,
                            UidMapping.name,
                            FileMetadata.filename,
@@ -67,26 +84,16 @@ def query():
                            FileMetadata.sum / GB).\
                         join(UidMapping,
                              FileMetadata.uid == UidMapping.uid).\
-                        filter(FileMetadata.count > -1,
-                               FileMetadata.owner == pi,
-                               (FileMetadata.sum / GB) > \
-                               foldersize).\
+                        filter(*filters).\
                         order_by(sqlalchemy.desc(FileMetadata.sum)).\
                         limit(rows_per_page).offset(offset)
     out = []
     for item in res:
         row = []
         for cell in item:
+            if isinstance(cell, datetime.datetime):
+                cell = cell.isoformat()
             row.append(cell)
         out.append(row)
 
     return jsonify(out)
-
-@main_blueprint.route('/pi_list')
-def pi_list():
-    import IPython;IPython.embed()
-    pi_file = os.path.join(main_blueprint.staticfolder, "pi_list.txt")
-    pi_fh = open(pi_file)
-    raw_lines = pi_fh.readlines()
-    lines = [x.strip() for x in raw_lines]
-    return jsonify(lines)
