@@ -4,6 +4,7 @@ https://docs.google.com/document/d/1IvzWOgbeQDLxkTlWX0bg2lcQBmxvba8mAaZgy0Ymxck/
 """
 
 import datetime
+import locale
 
 from flask.blueprints import Blueprint
 from flask import request, abort, jsonify, render_template
@@ -19,6 +20,7 @@ from models import FileMetadata, UidMapping
 
 GB = 1024 * 1024 * 1024
 
+locale.setlocale(locale.LC_ALL, 'en_US')
 
 main_blueprint = Blueprint('main_blueprint', __name__, # pylint: disable=invalid-name
                            template_folder='templates',
@@ -72,8 +74,7 @@ def query():
     except ValueError:
         abort(400, 'foldersize, rows_per_page, and offset must be numbers')
 
-    filters = [FileMetadata.count > -1, FileMetadata.sum  > (foldersize * GB)]
-    print("\n\n\nWhat is PI? {}\n\n\n".format(pi))
+    filters = [FileMetadata.count > -1, FileMetadata.sum > (foldersize * GB)]
     if pi != "None":
         filters.append(FileMetadata.owner == pi)
 
@@ -93,7 +94,10 @@ def query():
         for cell in item:
             if isinstance(cell, datetime.datetime):
                 cell = cell.isoformat()
+            elif isinstance(cell, int):
+                cell = locale.format("%d", cell, grouping=True)
             row.append(cell)
+
         out.append(row)
 
     return jsonify(out)
