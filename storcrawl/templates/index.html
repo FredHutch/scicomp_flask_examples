@@ -27,13 +27,13 @@
       <input name="size_threshold" data-bind="textInput: foldersize" type="number" size="4"/> GB
 
       <button data-bind="enable: page() >= 2, click: decrementPageCount" class="prevbutton">Previous</button>
-      <button data-bind="enable: rows().length > 0, click: incrementPageCount" class="nextbutton">Next</button>
+      <button data-bind="disable: rows().length < rows_per_page(), click: incrementPageCount" class="nextbutton">Next</button>
 
       Current page: <span data-bind="text: page"></span>
 
       <br/>
 
-        <table>
+        <table cellpadding="3">
             <thead><tr>
                 <th>Owner</th><th>Name</th><th>Filename</th><th>mtime</th><th>GB</th>
             </tr></thead>
@@ -49,7 +49,7 @@
 
 <br/>
 <button data-bind="enable: page() >= 2, click: decrementPageCount" class="prevbutton">Previous</button>
-<button data-bind="enable: rows().length > 0, click: incrementPageCount" class="nextbutton">Next</button>
+<button data-bind="disable: rows().length < rows_per_page(), click: incrementPageCount" class="nextbutton">Next</button>
 
 
 
@@ -72,24 +72,10 @@
         function MyViewModel() {
             var self = this;
 
-            // Non-editable catalog data - would come from the server
-            // self.availableMeals = [
-            //     { mealName: "Standard (sandwich)", price: 0 },
-            //     { mealName: "Premium (lobster)", price: 34.95 },
-            //     { mealName: "Ultimate (whole zebra)", price: 290 }
-            // ];
-
-            // Editable data
-            // self.rows = ko.observableArray([
-            //     new Row("nelson_p", "ndesarka", "/fh/fast/foo", "1/2/3", 6467.11),
-            //     new Row("christ_j", "satan", "/fh/fast/bar", "1/2/4", 666.666),
-            //     new Row("bla_b", "hell", "/fh/fast/baz", "1/2/5", 123.456)
-            // ]);
             self.rows = ko.observableArray([]);
             self.foldersize = ko.observable(10);
             self.offset = ko.observable(0);
             self.pi = ko.observable('None');
-            // self.pi = ko.observable('peters_u');
             self.rows_per_page = ko.observable(15);
             self.page = ko.observable(1);
 
@@ -124,6 +110,8 @@
 
             self.rows.subscribe(function(newValue) {
               console.log("model changed, size of rows is " + newValue.length);
+              console.log("rows_per_page is " + self.rows_per_page());
+              console.log("expression is " + self.rows().length < self.rows_per_page());
             });
 
             updateModel = function(startFromFirstPage) {
