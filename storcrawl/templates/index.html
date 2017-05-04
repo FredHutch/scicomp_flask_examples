@@ -25,10 +25,9 @@
 
       Show only folders larger than
       <input name="size_threshold" data-bind="textInput: foldersize" type="number" size="4"/> GB
-      <br/>size is:<p data-bind="text: foldersize"></p>
 
       <button data-bind="enable: page() >= 2, click: decrementPageCount" class="prevbutton">Previous</button>
-      <button data-bind="click: incrementPageCount" class="nextbutton">Next</button>
+      <button data-bind="enable: rows().length > 0, click: incrementPageCount" class="nextbutton">Next</button>
 
       Current page: <span data-bind="text: page"></span>
 
@@ -50,7 +49,7 @@
 
 <br/>
 <button data-bind="enable: page() >= 2, click: decrementPageCount" class="prevbutton">Previous</button>
-<button data-bind="click: incrementPageCount" class="nextbutton">Next</button>
+<button data-bind="enable: rows().length > 0, click: incrementPageCount" class="nextbutton">Next</button>
 
 
 
@@ -116,8 +115,16 @@
 
             this.foldersize.subscribe(function(newValue) {
               console.log("SIZE CHANGED!, new size is " + newValue);
+              if (!jQuery.isNumeric(newValue)) {
+                console.log("it's not numeric, returning");
+                return;
+              }
               updateModel(true);
-            })
+            });
+
+            self.rows.subscribe(function(newValue) {
+              console.log("model changed, size of rows is " + newValue.length);
+            });
 
             updateModel = function(startFromFirstPage) {
               console.log("in updateModel");
