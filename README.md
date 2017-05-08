@@ -1,5 +1,8 @@
 # Flask Applications the SciComp Way
 
+<!-- toc -->
+
+
 Use these templates to build your own
 [Flask](http://flask.pocoo.org/) application in
 a way that will be supported by
