@@ -2,6 +2,27 @@
 
 <!-- toc -->
 
+- [What is supported/required?](#what-is-supportedrequired)
+  * [Python 3](#python-3)
+  * [Virtual Environments](#virtual-environments)
+  * [Unit Tests](#unit-tests)
+  * [Database Access](#database-access)
+    + [Which RDBMS should I use?](#which-rdbms-should-i-use)
+  * [REST Access](#rest-access)
+  * [Other Supported/Recommended Modules](#other-supportedrecommended-modules)
+  * [Web Servers](#web-servers)
+  * [SSL (https)](#ssl-https)
+  * [Interacting with the gizmo cluster](#interacting-with-the-gizmo-cluster)
+  * [My app needs to call some R code](#my-app-needs-to-call-some-r-code)
+  * [Secrets Management](#secrets-management)
+  * [Does your app use PHI?](#does-your-app-use-phi)
+  * [Use GitHub for version control](#use-github-for-version-control)
+  * [Helpful Tools for code development](#helpful-tools-for-code-development)
+    + [Linters](#linters)
+    + [Profiling](#profiling)
+  * [Continuous Integration (CI)](#continuous-integration-ci)
+
+<!-- tocstop -->
 
 Use these templates to build your own
 [Flask](http://flask.pocoo.org/) application in
