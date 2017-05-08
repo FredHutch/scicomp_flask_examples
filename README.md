@@ -29,7 +29,7 @@ Use these templates to build your own
 a way that will be supported by
 [SciComp](https://teams.fhcrc.org/sites/citwiki/SciComp/Pages/Home.aspx?TreeField=Wiki_x0020_Page_x0020_Categories).
 
-## What is supported/required?
+## eWhat is supported/required?
 
 ### Python 3
 
