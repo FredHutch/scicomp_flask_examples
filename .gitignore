@@ -3,3 +3,4 @@ __pycache__/
 setup.sh
 storcrawl/static/pi_list.txt
 storcrawl/secrets.json
+.pypirc
